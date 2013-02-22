@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension id="domain_language_redirect" status="experimental" xmlns="http://symphony-cms.com/schemas/extension/1.0">
+	<name>Domain Language Redirect</name>
+	<description>Tracks user information from the Frontend</description>
+	<authors>
+		<author>
+			<name symphony="gunglien">Jonathan Mifsud</name>
+			<email>info@jonmifsud.com</email>
+		</author>
+	</authors>
+	<releases>
+		<release version="0.1.0" date="2013-02-20" min="2.3" max="2.3.x" />
+	</releases>
+	<dependencies>
+		<dependency version="1.7">frontend_localisation</dependency>
+	</dependencies>
+</extension>
