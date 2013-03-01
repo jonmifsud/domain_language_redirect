@@ -24,7 +24,7 @@
 			return false;
 		}
 
-		public function grab(&$param_pool = NULL){
+		public function execute(&$param_pool = NULL){
 			$result = new XMLElement('domain-language');
 
 			$redirects = Symphony::Configuration()->get('domain_language_redirect');
