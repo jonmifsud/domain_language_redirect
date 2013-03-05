@@ -9,7 +9,7 @@
 		</author>
 	</authors>
 	<releases>
-		<release version="0.1.0" date="2013-02-20" min="2.3" max="2.3.x" />
+		<release version="0.1.2" date="2013-02-20" min="2.3" max="2.3.x" />
 	</releases>
 	<dependencies>
 		<dependency version="1.7">frontend_localisation</dependency>

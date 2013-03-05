@@ -27,6 +27,12 @@
 					'callback' => 'save'
 				),
 
+				array(
+					'page' => '/backend/',
+					'delegate' => 'InitaliseAdminPageHead',
+					'callback' => 'initaliseAdminPageHead'
+				),
+
 			);
 		}
 
@@ -37,25 +43,54 @@
 		 * @param array $context
 		 */
 		public function addCustomPreferenceFieldsets(array $context){
+			$main_lang = FLang::getMainLang();
+			$all_langs = FLang::getAllLangs();
+
 			$group = new XMLElement('fieldset');
 			$group->setAttribute('class', 'settings');
 			$group->appendChild(new XMLElement('legend', __('Domain Language Redirect')));
 
-			$div = new XMLElement('div', null, array('class' => 'two columns'));
+			$wrapper = new XMLElement('div', null, array('class' => 'field-multilingual'));
 
-			foreach (FLang::getLangs() as $key => $language) {
-				$label = Widget::Label(__("{$language} domain"), null, 'column', DLR_HANDLE."_{$language}");
-				$label->appendChild(Widget::Input('settings['.DLR_HANDLE."][{$language}]", Symphony::Configuration()->get($language, DLR_HANDLE)));
-				$label->appendChild(new XMLElement('p', __('Domain for this language.'), array('class' => 'help')));
-				$div->appendChild($label);
+			$container = new XMLElement('div', null, array('class' => 'container'));
+			$i = new XMLElement('i', '', array('class' => "tab-element tab-{$main_lang}", 'data-lang_code'=> "{$main_lang}"));
+			$wrapper->appendChild($i);
+
+			/*------------------------------------------------------------------------------------------------*/
+			/*  Tabs  */
+			/*------------------------------------------------------------------------------------------------*/
+
+			$ul = new XMLElement('ul', null, array('class' => 'tabs'));
+			foreach( FLang::getLangs() as $key => $language ){
+				$li = new XMLElement('li', $all_langs[$language], array('class' => $language));
+				$lc === $main_lang ? $ul->prependChild($li) : $ul->appendChild($li);
 			}
+
+			$container->appendChild($ul);
+
+
+			/*------------------------------------------------------------------------------------------------*/
+			/*  Panels  */
+			/*------------------------------------------------------------------------------------------------*/
+
+			foreach( FLang::getLangs() as $key => $language){
+				$div = new XMLElement('div', null, array('class' => 'tab-panel tab-'.$language));
+
+				$span = new XMLElement('span', null, array('class' => 'frame'));
+
+				$span->appendChild(Widget::Input('settings['.DLR_HANDLE."][{$language}]", Symphony::Configuration()->get($language, DLR_HANDLE)));
+				$div->appendChild($span);
+				$container->appendChild($div);
+			}
+			
+			$wrapper->appendChild($container);
 
 			$checkbox = Widget::Input('settings['.DLR_HANDLE.'][enabled]', "yes", 'checkbox');
 			if( Symphony::Configuration()->get('enabled', DLR_HANDLE) == "yes" ){
 				$checkbox->setAttribute('checked', 'checked');
 			}
 
-			$group->appendChild($div);
+			$group->appendChild($wrapper);
 
 			$label = Widget::Label($checkbox->generate().' '.__('Domain Redirect Enabled'));
 			$label->appendChild(new XMLElement('p', __('Check this to enable domain redirects.'), array('class' => 'help')));
@@ -117,6 +152,21 @@
 			return $valid;
 		}
 
+		/**
+		 * Add headers to the page.
+		 *
+		 * @param $type
+		 */
+		static public function initaliseAdminPageHead($type){
+			$page = Administration::instance()->Page;
+// die;
+			// if( $type === self::SETTING_HEADERS ){
+
+				$page->addStylesheetToHead(URL.'/extensions/frontend_localisation/assets/frontend_localisation.multilingual_tabs.css', 'screen', null, false);
+				$page->addScriptToHead(URL.'/extensions/frontend_localisation/assets/frontend_localisation.multilingual_tabs.js', null, false);
+				$page->addScriptToHead(URL.'/extensions/frontend_localisation/assets/frontend_localisation.multilingual_tabs_init.js', null, false);
+			// }
+		}
 				
 		public function enable(){
 			return $this->install();
