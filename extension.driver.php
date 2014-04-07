@@ -29,7 +29,7 @@
 
 				array(
 					'page' => '/backend/',
-					'delegate' => 'InitaliseAdminPageHead',
+					'delegate' => 'InitialiseAdminPageHead',
 					'callback' => 'initaliseAdminPageHead'
 				),
 
